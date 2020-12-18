@@ -24,9 +24,9 @@ RUN yum -y install unzip autoconf automake libtool gcc-c++ make && \
 
 FROM base AS build-clazy
 RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
-    git clone https://github.com/KDE/clazy.git --branch 1.6 && \
+    git clone https://github.com/KDE/clazy.git --branch 1.8 && \
     mkdir clazy-build && cd clazy-build && \
-    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix/clazy-1.6 && \
+    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix/clazy-1.8 && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 

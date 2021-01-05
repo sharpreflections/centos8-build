@@ -33,6 +33,8 @@ RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
 FROM base AS production
 COPY --from=build-protobuf $prefix $prefix
 COPY --from=build-clazy $prefix $prefix
+COPY --from=sharpreflections/centos6-build-qt:qt-5.12.0_gcc-8.3.1 /p/ /p/
+COPY --from=sharpreflections/centos6-build-qt:qt-5.12.0_icc-19.0  /p/ /p/
 
 # Our build dependencies
 RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel libGL-devel \

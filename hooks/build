@@ -1,6 +1,0 @@
-#!/bin/sh
-
-# Replace the variables since docker hub ignores them
-sed --in-place 's:\$prefix:/opt:g'        Dockerfile
-
-docker build --tag $IMAGE_NAME .

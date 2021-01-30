@@ -1,41 +1,37 @@
 FROM centos:8 AS base
 LABEL maintainer="dennis.brendel@sharpreflections.com"
 
-ARG prefix=/opt
 WORKDIR /build/
 RUN yum -y upgrade && yum clean all
 
 
 FROM base AS build-protobuf
-ARG prefix=/opt
 RUN yum -y install unzip autoconf automake libtool gcc-c++ make && \
     echo "Downloading protobuf 3.0.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.0.2 --output protobuf-3.0.2.tar.gz && \
     echo "Downloading protobuf 3.5.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.5.2 --output protobuf-3.5.2.tar.gz && \
     for file in *; do echo -n "Extracting $file: " && tar -xf $file && echo "done"; done && \
     cd protobuf-3.0.2 && \
     ./autogen.sh && \
-    ./configure --prefix=$prefix/protobuf-3.0 && \
+    ./configure --prefix=/opt/protobuf-3.0 && \
     make --jobs=$(nproc --all) && make install && \
     cd .. && \
     cd protobuf-3.5.2 && \
     ./autogen.sh && \
-    ./configure --prefix=$prefix/protobuf-3.5 && \
+    ./configure --prefix=/opt/protobuf-3.5 && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 
 FROM base AS build-clazy
-ARG prefix=/opt
 RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
     git clone https://github.com/KDE/clazy.git --branch 1.8 && \
     mkdir clazy-build && cd clazy-build && \
-    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix/clazy-1.8 && \
+    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/clazy-1.8 && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 
 FROM base AS production
-ARG prefix=/opt
-COPY --from=build-protobuf $prefix $prefix
-COPY --from=build-clazy $prefix $prefix
+COPY --from=build-protobuf /opt /opt
+COPY --from=build-clazy    /opt /opt
 COPY --from=sharpreflections/centos6-build-qt:qt-5.12.0_gcc-8.3.1 /p/ /p/
 COPY --from=sharpreflections/centos6-build-qt:qt-5.12.0_icc-19.0  /p/ /p/
 

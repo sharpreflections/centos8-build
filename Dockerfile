@@ -45,6 +45,8 @@ RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel 
     # clang, gcc and svn
     yum -y install @development gcc-gfortran gcc-toolset-9 \
                    @llvm-toolset libomp-devel subversion cmake distcc-server && \
+    # For building OSMesa
+    yum -y install python2 && \
     # Misc (developer) tools and xvfb for QTest
     yum -y install strace valgrind bc joe vim nano mc psmisc \
                    xorg-x11-server-Xvfb && \

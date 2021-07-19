@@ -43,7 +43,7 @@ RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel 
     # Requirements for using epel
     yum -y install yum-utils epel-release.noarch && \
     # clang, gcc and svn
-    yum -y install @development gcc-gfortran gcc-toolset-9 \
+    yum -y install @development gcc-gfortran gcc-toolset-9 gcc-toolset-10 \
                    @llvm-toolset libomp-devel subversion cmake distcc-server && \
     # For building OSMesa
     yum -y install python2 && \

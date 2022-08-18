@@ -2,7 +2,9 @@ FROM centos:8 AS base
 LABEL maintainer="juergen.wind@sharpreflections.com"
 
 WORKDIR /build/
-RUN yum -y upgrade && yum clean all
+RUN cd /etc/yum.repos.d/ && sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*  && \
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* && \
+    yum -y update && yum -y upgrade && yum clean all
 
 
 FROM base AS build-protobuf
@@ -32,8 +34,7 @@ RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
 FROM base AS production
 COPY --from=build-protobuf /opt /opt
 COPY --from=build-clazy    /opt /opt
-COPY --from=sharpreflections/centos6-build-qt:qt-5.12.0_gcc-8.3.1 /p/ /p/
-COPY --from=sharpreflections/centos6-build-qt:qt-5.12.0_icc-19.0  /p/ /p/
+COPY --from=quay.io/sharpreflections/centos7-build-qt /p /p 
 
 # Our build dependencies
 RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel libGL-devel \

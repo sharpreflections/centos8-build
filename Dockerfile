@@ -9,21 +9,9 @@ RUN cd /etc/yum.repos.d/ && sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d
 
 FROM base AS build-protobuf
 RUN yum -y install unzip autoconf automake libtool gcc-c++ make && \
-    echo "Downloading protobuf 3.0.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.0.2 --output protobuf-3.0.2.tar.gz && \
-    echo "Downloading protobuf 3.5.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.5.2 --output protobuf-3.5.2.tar.gz && \
     echo "Downloading protobuf 3.7.0:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.7.0 --output protobuf-3.7.0.tar.gz && \
     echo "Downloading protobuf 3.19.0:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.19.0 --output protobuf-3.19.0.tar.gz && \
     for file in *; do echo -n "Extracting $file: " && tar -xf $file && echo "done"; done && \
-    cd protobuf-3.0.2 && \
-    ./autogen.sh && \
-    ./configure --prefix=/opt/protobuf-3.0 && \
-    make --jobs=$(nproc --all) && make install && \
-    cd .. && \
-    cd protobuf-3.5.2 && \
-    ./autogen.sh && \
-    ./configure --prefix=/opt/protobuf-3.5 && \
-    make --jobs=$(nproc --all) && make install && \
-    cd .. && \
     cd protobuf-3.7.0 && \
     ./autogen.sh && \
     ./configure --prefix=/opt/protobuf-3.7 && \
@@ -33,6 +21,7 @@ RUN yum -y install unzip autoconf automake libtool gcc-c++ make && \
     ./autogen.sh && \
     ./configure --prefix=/opt/protobuf-3.19.0 && \
     make --jobs=$(nproc --all) && make install && \
+    cd .. && \
     rm -rf /build/*
 
 FROM base AS build-clazy
